@@ -12,7 +12,7 @@ public class XcraftSignElevatorPlugin extends JavaPlugin implements ChatOutput {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(
-            new SignClickEventListener(),
+            new SignClickEventListener(new Elevator(this)),
             this
         );
     }
