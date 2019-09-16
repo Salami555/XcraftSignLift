@@ -1,0 +1,16 @@
+name: XcraftSignElevator
+main: de.groovybyte.spigot.xcraftsignelevator.XcraftSignElevatorPlugin
+version: ${pom.version}
+authors: [Salami555]
+
+permissions:
+    XcraftSignLift.*:
+        description: Access to all commands
+        children:
+            XcraftSignLift.use: true
+            XcraftSignLift.create: true
+        default: true
+    XcraftSignLift.use:
+        description: Allows usage of elevator signs
+    XcraftSignLift.create:
+        description: Allows creation of elevator signs
