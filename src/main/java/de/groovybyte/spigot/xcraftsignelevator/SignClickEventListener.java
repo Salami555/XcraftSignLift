@@ -6,17 +6,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import static de.groovybyte.spigot.xcraftsignelevator.SignUtils.isSign;
 
-import java.util.logging.Logger;
+import java.util.Optional;
 
 class SignClickEventListener implements Listener {
 
-    private final Elevator elevator;
+    private final ElevatorFactory elevatorFactory;
+    private final ChatOutput output;
 
-    SignClickEventListener(Elevator elevator) {
-        this.elevator = elevator;
+    SignClickEventListener(ElevatorFactory elevatorFactory, ChatOutput output) {
+        this.elevatorFactory = elevatorFactory;
+        this.output = output;
     }
 
     @EventHandler
@@ -36,13 +38,15 @@ class SignClickEventListener implements Listener {
     }
 
     private boolean onPlayerClickedSign(Player player, Sign sign) {
-        if(elevator.isElevator(sign)) {
-            return elevator.onElevatorClicked(player, sign);
+        try {
+            Optional<Elevator> elevator = elevatorFactory.findElevator(sign);
+            if(elevator.isPresent()) {
+                elevator.get().takeRide(player);
+                return true;
+            }
+        } catch (IllegalArgumentException | IllegalStateException ex) {
+            output.message(player, ex.getMessage());
         }
         return false;
-    }
-
-    private boolean isSign(Block block) {
-        return block.getState() instanceof Sign;
     }
 }
